@@ -51,7 +51,18 @@ public class ClientsControllerTest {
 			.andExpect(MockMvcResultMatchers.jsonPath("$[0].uuid").value("dcf129f1-a2f9-47dc-8265-1d844244b192"))
 		 	.andExpect(MockMvcResultMatchers.jsonPath("$[0].nom").value("Odd"))
 		 	.andExpect(MockMvcResultMatchers.jsonPath("$[0].prenoms").value("Ross"));
+	}
+	
+	@Test
+	void findbyUUID() throws Exception{
+		Client c1 = new Client("Odd", "Ross");
+		c1.setUuid(UUID.fromString("dcf129f1-a2f9-47dc-8265-1d844244b192"));
 		
+		Mockito.when(repo.getByUUID(UUID.fromString("dcf129f1-a2f9-47dc-8265-1d844244b192"))).thenReturn(c1);
 		
+		mockMvc.perform(MockMvcRequestBuilders.get("/client/dcf129f1-a2f9-47dc-8265-1d844244b192"))
+			.andExpect(MockMvcResultMatchers.status().isOk())
+			.andExpect(MockMvcResultMatchers.jsonPath("nom").value("Odd"))
+			.andExpect(MockMvcResultMatchers.jsonPath("prenoms").value("Ross"));
 	}
 }

@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 @Entity
 public class Client extends BaseEntite {
 
-
     private String nom;
 
     private String prenoms;

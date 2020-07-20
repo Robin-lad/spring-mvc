@@ -39,16 +39,16 @@ public class ClientsController {
 				.body(clients);
 	}
 	
-//	@GetMapping("clients/{UUID}")
-//	public ResponseEntity<Optional<Client>> getUUID(@PathVariable UUID id) {
-//		Optional<Client> client = clientRepository.getByUUID(id);
-//		
-//		if(client.isEmpty()) {
-//			return ResponseEntity.status(404)
-//					.body(null);
-//		}else {
-//			return ResponseEntity.status(200)
-//					.body(client);
-//		}
-//	}
+	@GetMapping("client/{id}")
+	public ResponseEntity<Client> getUUID(@PathVariable UUID id) {
+		Client client = clientRepository.getByUUID(id);
+		
+		if(client == null) {
+			return ResponseEntity.status(404)
+					.body(null);
+		}else {
+			return ResponseEntity.status(200)
+					.body(client);
+		}
+	}
 }
