@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -35,14 +37,18 @@ public class ClientsControllerTest {
 	@MockBean
 	ClientRepository repo;
 	
-	@Test
-	void list() throws Exception{
-		List<Client> l = new ArrayList<>();
+	List<Client> clients = new ArrayList<>();
+	
+	@BeforeEach
+	void setUp() {
 		Client c1 = new Client("Odd", "Ross");
 		c1.setUuid(UUID.fromString("dcf129f1-a2f9-47dc-8265-1d844244b192"));
-		l.add(c1);
-		
-		Page<Client> p = new PageImpl<>(l);
+		clients.add(c1);
+	}
+	
+	@Test
+	void list() throws Exception{		
+		Page<Client> p = new PageImpl<>(clients);
 		
 		Mockito.when(repo.findAll(PageRequest.of(0, 1))).thenReturn(p);
 
@@ -55,14 +61,24 @@ public class ClientsControllerTest {
 	
 	@Test
 	void findbyUUID() throws Exception{
-		Client c1 = new Client("Odd", "Ross");
-		c1.setUuid(UUID.fromString("dcf129f1-a2f9-47dc-8265-1d844244b192"));
 		
-		Mockito.when(repo.getByUUID(UUID.fromString("dcf129f1-a2f9-47dc-8265-1d844244b192"))).thenReturn(c1);
+		Mockito.when(repo.getByUUID(UUID.fromString("dcf129f1-a2f9-47dc-8265-1d844244b192"))).thenReturn(clients.get(0));
 		
-		mockMvc.perform(MockMvcRequestBuilders.get("/client/dcf129f1-a2f9-47dc-8265-1d844244b192"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/clients/dcf129f1-a2f9-47dc-8265-1d844244b192"))
 			.andExpect(MockMvcResultMatchers.status().isOk())
 			.andExpect(MockMvcResultMatchers.jsonPath("nom").value("Odd"))
 			.andExpect(MockMvcResultMatchers.jsonPath("prenoms").value("Ross"));
+	}
+	
+	@Test
+	void createClientTest() throws Exception {
+		Mockito.when(repo.save(clients.get(0))).thenReturn(clients.get(0));
+		
+		String json = "{ \"nom\": \"Ladenburger\", \"prenoms\":\"Robin\" }";
+		
+		mockMvc.perform(MockMvcRequestBuilders.post("/clients").contentType(MediaType.APPLICATION_JSON).content(json))
+			.andExpect(MockMvcResultMatchers.status().isOk())
+			.andExpect(MockMvcResultMatchers.jsonPath("nom").value("Ladenburger"))
+			.andExpect(MockMvcResultMatchers.jsonPath("prenoms").value("Robin"));
 	}
 }

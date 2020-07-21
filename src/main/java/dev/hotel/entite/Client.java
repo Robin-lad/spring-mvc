@@ -13,6 +13,7 @@ public class Client extends BaseEntite {
     }
 
     public Client(String nom, String prenoms) {
+    	super();
         this.nom = nom;
         this.prenoms = prenoms;
     }
