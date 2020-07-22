@@ -78,5 +78,5 @@ public class ClientsControllerTest {
 			.andExpect(MockMvcResultMatchers.status().isOk())
 			.andExpect(MockMvcResultMatchers.jsonPath("nom").value("Ladenburger"))
 			.andExpect(MockMvcResultMatchers.jsonPath("prenoms").value("Robin"));
-	}
+	} 
 }
