@@ -9,8 +9,8 @@ import java.util.UUID;
  * @author robin
  *
  */
-public class ClientDto extends CreerClientDto{
-
+public class ReservationDto extends CreerReservationDto {
+	
 	private UUID uuid;
 
 	/**

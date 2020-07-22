@@ -20,6 +20,7 @@ import dev.hotel.repository.ClientRepository;
  *
  */
 @Service
+@Transactional
 public class ClientService {
 	
 	private ClientRepository clientRepository;
@@ -29,18 +30,15 @@ public class ClientService {
 		this.clientRepository = clientRepository;
 	}
 	
-	@Transactional
 	public List<Client> getListClientPage(PageRequest pageRequest){
 		return clientRepository.findAll(pageRequest).toList();
 	}
 	
-	@Transactional
 	public Optional<Client> getClientByUuid(UUID uuid) {
 		Optional<Client> client = this.clientRepository.findById(uuid);
 		return client;
 	}
 	
-	@Transactional
 	public Client creer(String nom, String prenom) {
 		Client client = new Client(nom, prenom);
 		
