@@ -42,7 +42,7 @@ public class ReservationController {
 	}
 	
 	@PostMapping
-	public String ajoutReservation(@RequestBody @Valid CreerReservationDto reservation, BindingResult result) {
+	public Reservation ajoutReservation(@RequestBody @Valid CreerReservationDto reservation, BindingResult result) {
 
 		if(result.hasErrors()) {
 			throw new ReservationException(new MessageErreurDto(CodeErreur.VALIDATION, "Données incorrectes pour la création d'une réservation."));
@@ -65,6 +65,6 @@ public class ReservationController {
 //		reservationDto.setClientId(reservationCreer.getClient().getUuid());
 //		reservationDto.setUuidChambres(reservationCreer.);
 		
-		return "test";
+		return reservationCreer;
 	}
 }
