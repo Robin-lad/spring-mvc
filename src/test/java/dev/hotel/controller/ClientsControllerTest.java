@@ -5,6 +5,7 @@ package dev.hotel.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import dev.hotel.entite.Client;
 import dev.hotel.repository.ClientRepository;
+import dev.hotel.service.ClientService;
 
 /**
  * @author robin
@@ -35,7 +37,7 @@ public class ClientsControllerTest {
 	MockMvc mockMvc;
 	
 	@MockBean
-	ClientRepository repo;
+	ClientService clientService;
 	
 	List<Client> clients = new ArrayList<>();
 	
@@ -48,9 +50,8 @@ public class ClientsControllerTest {
 	
 	@Test
 	void list() throws Exception{		
-		Page<Client> p = new PageImpl<>(clients);
 		
-		Mockito.when(repo.findAll(PageRequest.of(0, 1))).thenReturn(p);
+		Mockito.when(clientService.getListClientPage(PageRequest.of(0, 1))).thenReturn(clients);
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/clients?start=0&size=1"))
 			.andExpect(MockMvcResultMatchers.status().isOk())
@@ -62,7 +63,7 @@ public class ClientsControllerTest {
 	@Test
 	void findbyUUID() throws Exception{
 		
-		Mockito.when(repo.getByUUID(UUID.fromString("dcf129f1-a2f9-47dc-8265-1d844244b192"))).thenReturn(clients.get(0));
+		Mockito.when(clientService.getClientByUuid(UUID.fromString("dcf129f1-a2f9-47dc-8265-1d844244b192"))).thenReturn(Optional.of(clients.get(0)));
 		
 		mockMvc.perform(MockMvcRequestBuilders.get("/clients/dcf129f1-a2f9-47dc-8265-1d844244b192"))
 			.andExpect(MockMvcResultMatchers.status().isOk())
@@ -72,7 +73,7 @@ public class ClientsControllerTest {
 	
 	@Test
 	void createClientTest() throws Exception {
-		Mockito.when(repo.save(clients.get(0))).thenReturn(clients.get(0));
+		Mockito.when(clientService.creer("Ladenburger", "Robin")).thenReturn(new Client("Ladenburger", "Robin"));
 		
 		String json = "{ \"nom\": \"Ladenburger\", \"prenoms\":\"Robin\" }";
 		

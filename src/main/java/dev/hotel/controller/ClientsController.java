@@ -7,62 +7,73 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.hotel.dto.ClientDto;
+import dev.hotel.dto.CodeErreur;
+import dev.hotel.dto.CreerClientDto;
+import dev.hotel.dto.MessageErreurDto;
 import dev.hotel.entite.Client;
-import dev.hotel.repository.ClientRepository;
+import dev.hotel.exception.ClientException;
+import dev.hotel.service.ClientService;
 /**
  * @author robin
  *
  */
 @RestController
+@RequestMapping("clients")
 public class ClientsController {
 	
-	private ClientRepository clientRepository;
+	private ClientService clientService;
 
-	public ClientsController(ClientRepository clientRepository) {
+	public ClientsController(ClientService clientService) {
 		super();
-		this.clientRepository = clientRepository;
+		this.clientService = clientService;
 	}
 	
-	@GetMapping("clients")
-	public ResponseEntity<List<Client>> getClients(@RequestParam("start") Integer start, @RequestParam("size") Integer size) {
-		List<Client> clients = clientRepository.findAll(PageRequest.of(start, size)).toList();
+	@GetMapping
+	public List<Client> getClients(@RequestParam("start") Integer start, @RequestParam("size") Integer size) {
+		List<Client> clients = clientService.getListClientPage(PageRequest.of(start, size));
+		return clients;
 		
-		return ResponseEntity.status(200)
-				.body(clients);
 	}
 	
-	@GetMapping("clients/{id}")
-	public ResponseEntity<Client> getUUID(@PathVariable UUID id) {
-		Client client = clientRepository.getByUUID(id);
+	@GetMapping("{uuid}")
+	public Optional<Client> getUUID(@PathVariable UUID uuid) {
+		Optional<Client> client = clientService.getClientByUuid(uuid);
 		
 		if(client == null) {
-			return ResponseEntity.status(404)
-					.body(null);
-		}else {
-			return ResponseEntity.status(200)
-					.body(client);
+			throw new ClientException(new MessageErreurDto(CodeErreur.VALIDATION, "UUID incorrect."));
 		}
+		
+		return client;
 	}
 	
-	@PostMapping("clients")
-	public ResponseEntity<?> creerClients(@RequestBody Client c){
-		if(c.getNom().length() > 2 && c.getPrenoms().length() > 2) {
-			clientRepository.save(c);
-			return ResponseEntity.status(200)
-					.body(c);
-		}else {
-			return ResponseEntity.status(404)
-					.body("Erreur : Le nom ou le prénom fait moins que 2 caractères");
+	@PostMapping
+	public ClientDto creerClients(@RequestBody @Valid CreerClientDto client, BindingResult result){
+		
+		if(result.hasErrors()) {
+			throw new ClientException(new MessageErreurDto(CodeErreur.VALIDATION, "Données incorrectes pour la création d'un client."));
 		}
+		
+		Client clientCreer = clientService.creer(client.getNom(), client.getPrenom());
+		
+		ClientDto clientDto = new ClientDto();
+		clientDto.setUuid(clientCreer.getUuid());
+		clientDto.setNom(clientCreer.getNom());
+		clientDto.setPrenom(clientCreer.getPrenoms());
+		
+		return clientDto;
 	}
 }
