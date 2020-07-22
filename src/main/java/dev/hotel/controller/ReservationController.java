@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.hotel.dto.CodeErreur;
 import dev.hotel.dto.CreerReservationDto;
 import dev.hotel.dto.MessageErreurDto;
-import dev.hotel.dto.ReservationDto;
 import dev.hotel.entite.Reservation;
 import dev.hotel.exception.ReservationException;
 import dev.hotel.service.ReservationService;
