@@ -59,7 +59,7 @@ public class ClientsController {
 	public Optional<Client> getByName(@PathVariable String nom) {
 		Optional<Client> client = clientService.getClientByName(nom);
 		
-		if(client == null) {
+		if(client.isEmpty()) {
 			throw new ClientException(new MessageErreurDto(CodeErreur.VALIDATION, "Nom incorrect."));
 		}
 		
@@ -70,7 +70,7 @@ public class ClientsController {
 	public Optional<Client> getUUID(@PathVariable UUID uuid) {
 		Optional<Client> client = clientService.getClientByUuid(uuid);
 		
-		if(client == null) {
+		if(client.isEmpty()) {
 			throw new ClientException(new MessageErreurDto(CodeErreur.VALIDATION, "UUID incorrect."));
 		}
 		
