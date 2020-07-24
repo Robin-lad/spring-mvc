@@ -23,6 +23,7 @@ import dev.hotel.entite.Chambre;
 import dev.hotel.entite.Client;
 import dev.hotel.entite.Hotel;
 import dev.hotel.entite.Reservation;
+import dev.hotel.exception.ReservationException;
 import dev.hotel.service.ReservationService;
 
 /**
@@ -44,7 +45,7 @@ public class ReservationControllerTest {
 	}
 	
 	@Test
-	void createClientTest() throws Exception {
+	void createReservationTest() throws Exception {
 		List<UUID> uuidChambre = new ArrayList<>();
 		uuidChambre.add(UUID.fromString("43793061-f70b-44b9-a855-adc66a2efb9f"));
 		uuidChambre.add(UUID.fromString("0a0d4672-a273-4e1f-b399-8272ae81296f"));
@@ -68,8 +69,11 @@ public class ReservationControllerTest {
 		Reservation r1 = new Reservation(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 8, 5), cl1, chambres); 
 		
 		Mockito.when(reservationService.creer(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 8, 5), UUID.fromString("91defde0-9ad3-4e4f-886b-f5f06f601a0d"), uuidChambre)).thenReturn(r1);
+		Mockito.when(reservationService.creer(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 8, 5), UUID.fromString("00000000-0000-0000-0000-000000000000"), uuidChambre)).thenThrow(ReservationException.class);
+		uuidChambre.add(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+		Mockito.when(reservationService.creer(LocalDate.of(2020, 8, 1), LocalDate.of(2020, 8, 5), UUID.fromString("91defde0-9ad3-4e4f-886b-f5f06f601a0d"), uuidChambre)).thenThrow(ReservationException.class);
 		
-		String json = "{ \"dateDebut\": \"2020-08-20\", \"dateFin\":\"2020-08-22\", \"clientId\": \"91defde0-9ad3-4e4f-886b-f5f06f601a0d\", \"chambres\": [ \"43793061-f70b-44b9-a855-adc66a2efb9f\",\"0a0d4672-a273-4e1f-b399-8272ae81296f\"] }";
+		String json = "{ \"dateDebut\": \"2020-08-20\", \"dateFin\":\"2020-08-22\", \"clientId\":\"91defde0-9ad3-4e4f-886b-f5f06f601a0d\", \"chambres\": [ \"43793061-f70b-44b9-a855-adc66a2efb9f\",\"0a0d4672-a273-4e1f-b399-8272ae81296f\"] }";
 		mockMvc.perform(MockMvcRequestBuilders.post("/reservations").contentType(MediaType.APPLICATION_JSON).content(json))
 			.andExpect(MockMvcResultMatchers.status().isOk());
 	}

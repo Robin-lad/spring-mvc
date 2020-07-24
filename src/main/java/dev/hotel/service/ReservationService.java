@@ -12,9 +12,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import dev.hotel.dto.CodeErreur;
+import dev.hotel.dto.MessageErreurDto;
 import dev.hotel.entite.Chambre;
 import dev.hotel.entite.Client;
 import dev.hotel.entite.Reservation;
+import dev.hotel.exception.ReservationException;
 import dev.hotel.repository.ChambreRepository;
 import dev.hotel.repository.ClientRepository;
 import dev.hotel.repository.ReservationRepository;
@@ -61,6 +64,14 @@ public class ReservationService {
 	}
 	
 	public Reservation creer(LocalDate dateDebut, LocalDate dateFin, UUID uuidClient, Iterable<UUID> uuidChambres) {
+		
+		if(!clientExiste(uuidClient)) {
+			throw new ReservationException(new MessageErreurDto(CodeErreur.VALIDATION, "uuid client non trouvé"));
+		}
+		
+		if(!chambresExistent((List<UUID>) uuidChambres)) {
+			throw new ReservationException(new MessageErreurDto(CodeErreur.VALIDATION, "L'iuud de la ou les chambre(s) n'existe(nt) pas."));
+		}
 		
 		Reservation reservation = new Reservation(dateDebut, dateFin, clientRepository.findById(uuidClient).get(), chambreRepository.findAllById(uuidChambres));
 		

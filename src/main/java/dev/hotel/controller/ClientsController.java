@@ -43,6 +43,13 @@ public class ClientsController {
 	}
 	
 	@GetMapping
+	public List<Client> getClients() {
+		List<Client> clients = clientService.getListClient();
+		return clients;
+		
+	}
+	
+	@GetMapping
 	public List<Client> getClients(@RequestParam("start") Integer start, @RequestParam("size") Integer size) {
 		List<Client> clients = clientService.getListClientPage(PageRequest.of(start, size));
 		return clients;

@@ -30,6 +30,10 @@ public class ClientService {
 		this.clientRepository = clientRepository;
 	}
 	
+	public List<Client> getListClient(){
+		return clientRepository.findAll();
+	}
+	
 	public List<Client> getListClientPage(PageRequest pageRequest){
 		return clientRepository.findAll(pageRequest).toList();
 	}

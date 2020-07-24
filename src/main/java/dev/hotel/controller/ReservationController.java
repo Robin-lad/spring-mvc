@@ -48,14 +48,6 @@ public class ReservationController {
 			throw new ReservationException(new MessageErreurDto(CodeErreur.VALIDATION, "Données incorrectes pour la création d'une réservation."));
 		}
 		
-		if(!reservationService.clientExiste(reservation.getClientId())) {
-			throw new ReservationException(new MessageErreurDto(CodeErreur.VALIDATION, "uuid client non trouvé"));
-		}
-		
-		if(!reservationService.chambresExistent(reservation.getChambres())) {
-			throw new ReservationException(new MessageErreurDto(CodeErreur.VALIDATION, "L'iuud de la ou les chambre(s) n'existe(nt) pas."));
-		}
-		
 		Reservation reservationCreer = reservationService.creer(reservation.getDateDebut(), reservation.getDateFin(), reservation.getClientId(), reservation.getChambres());
 		
 //		ReservationDto reservationDto = new ReservationDto();
