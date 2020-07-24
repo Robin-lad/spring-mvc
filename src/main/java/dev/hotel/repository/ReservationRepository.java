@@ -17,10 +17,6 @@ import dev.hotel.entite.Reservation;
  */
 public interface ReservationRepository extends JpaRepository<Reservation, UUID>{
 
-	/**
-	 * 
-	 */
 	@Query("select r from Reservation r join r.chambres c where c.numero = ?1")
 	Optional<Reservation> chambreDispo(String numero);
-	
 }
