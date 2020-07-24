@@ -38,6 +38,11 @@ public class ClientService {
 		return clientRepository.findAll(pageRequest).toList();
 	}
 	
+	public Optional<Client> getClientByName(String nom) {
+		Optional<Client> client = this.clientRepository.findByName(nom);
+		return client;
+	}
+	
 	public Optional<Client> getClientByUuid(UUID uuid) {
 		Optional<Client> client = this.clientRepository.findById(uuid);
 		return client;

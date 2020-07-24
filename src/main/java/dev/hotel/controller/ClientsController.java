@@ -41,7 +41,7 @@ public class ClientsController {
 		this.clientService = clientService;
 	}
 	
-	@GetMapping("/all")
+	@GetMapping("all")
 	public List<Client> getClients() {
 		List<Client> clients = clientService.getListClient();
 		return clients;
@@ -53,6 +53,17 @@ public class ClientsController {
 		List<Client> clients = clientService.getListClientPage(PageRequest.of(start, size));
 		return clients;
 		
+	}
+	
+	@GetMapping("search/{nom}")
+	public Optional<Client> getByName(@PathVariable String nom) {
+		Optional<Client> client = clientService.getClientByName(nom);
+		
+		if(client == null) {
+			throw new ClientException(new MessageErreurDto(CodeErreur.VALIDATION, "Nom incorrect."));
+		}
+		
+		return client;
 	}
 	
 	@GetMapping("{uuid}")
