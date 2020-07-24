@@ -10,7 +10,6 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,7 +41,7 @@ public class ClientsController {
 		this.clientService = clientService;
 	}
 	
-	@GetMapping
+	@GetMapping("/all")
 	public List<Client> getClients() {
 		List<Client> clients = clientService.getListClient();
 		return clients;
@@ -50,7 +49,7 @@ public class ClientsController {
 	}
 	
 	@GetMapping
-	public List<Client> getClients(@RequestParam("start") Integer start, @RequestParam("size") Integer size) {
+	public List<Client> getClientsPage(@RequestParam("start") Integer start, @RequestParam("size") Integer size) {
 		List<Client> clients = clientService.getListClientPage(PageRequest.of(start, size));
 		return clients;
 		
