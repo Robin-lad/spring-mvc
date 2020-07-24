@@ -45,6 +45,16 @@ public class ReservationService {
 		return reservationRepository.findAll();
 	}
 	
+
+	public String getChambreDispo(String num) {
+		Optional<Reservation> reserve = reservationRepository.chambreDispo(num);
+		if(reserve.isEmpty()) {
+			return "La chambre " + num + " est disponible.";
+		}else {
+			return "La chambre " + num + " est indisponible.";
+		}
+	}
+	
 	public boolean clientExiste(UUID uuid) {
 		Optional<Client> client = clientRepository.findById(uuid);
 		if(client.isPresent()) {
