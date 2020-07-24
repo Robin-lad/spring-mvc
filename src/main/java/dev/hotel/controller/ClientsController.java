@@ -41,14 +41,14 @@ public class ClientsController {
 		this.clientService = clientService;
 	}
 	
-	@GetMapping("all")
+	@GetMapping
 	public List<Client> getClients() {
 		List<Client> clients = clientService.getListClient();
 		return clients;
 		
 	}
 	
-	@GetMapping
+	@GetMapping("page")
 	public List<Client> getClientsPage(@RequestParam("start") Integer start, @RequestParam("size") Integer size) {
 		List<Client> clients = clientService.getListClientPage(PageRequest.of(start, size));
 		return clients;
